@@ -1,0 +1,423 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="An implementation readiness scanner to identify SaaS and AI workflow rollout risks, stakeholder conflicts, and configuration dependencies.">
+  <title>RiskScan — Implementation Readiness Scanner</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+  <!-- App Container -->
+  <div class="app-container">
+    
+    <!-- Top Header -->
+    <header class="app-header hide-on-print">
+      <div class="brand">
+        <span class="logo-icon">▲</span>
+        <div>
+          <h1>RISKSCAN</h1>
+          <p class="subtitle">Implementation Readiness Scanner</p>
+          <span id="provider-badge" class="badge badge-purple" style="display: inline-block; margin-top: 0.25rem;">Analysis mode: Loading...</span>
+        </div>
+      </div>
+      
+      <div class="header-controls">
+        <button id="btn-print" class="btn btn-secondary">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9V2h12v7M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2M6 14h12v8H6z"/></svg>
+          Print Advisory Memo
+        </button>
+      </div>
+    </header>
+
+    <!-- Main Workspace Layout -->
+    <main class="workspace hide-on-print">
+      
+      <!-- Left Sidebar: Controls & Input -->
+      <aside class="sidebar">
+        
+        <!-- Document Source Panel -->
+        <section class="panel">
+          <h2 class="panel-title">1. Scenario Ingestion</h2>
+          
+          <div class="preset-section">
+            <label class="label-heading">Demo Presets</label>
+            <div class="preset-buttons">
+              <button class="btn btn-preset active-preset" data-scenario="sales-marketing-conflict">Sales & Marketing Conflict</button>
+              <button class="btn btn-preset" data-scenario="ai-support-rollout">AI Support Rollout</button>
+              <button class="btn btn-preset" data-scenario="multi-location-operations">Multi-Location Operations</button>
+            </div>
+          </div>
+
+          <div class="input-form">
+            <label for="doc-text" class="label-heading">Source Document Content</label>
+            <textarea id="doc-text" placeholder="Paste customer discovery notes, meeting transcripts, or rollout requirements here..."></textarea>
+            
+            <div class="form-row">
+              <div class="form-group">
+                <label for="analysis-profile">Analysis Profile</label>
+                <select id="analysis-profile">
+                  <option value="general">General SaaS Implementation</option>
+                  <option value="ai-workflow">AI Workflow Implementation</option>
+                  <option value="operational">Operational Process Rollout</option>
+                  <option value="onboarding">Customer Onboarding</option>
+                </select>
+              </div>
+              
+              <div class="form-group">
+                <label for="project-name">Project Name</label>
+                <input type="text" id="project-name" value="Customer AI Rollout">
+              </div>
+            </div>
+
+            <button id="btn-scan" class="btn btn-primary btn-block">
+              <span>Run Risk Analysis</span>
+            </button>
+          </div>
+        </section>
+
+        <!-- Progress Pipeline -->
+        <section id="pipeline-panel" class="panel" style="display: none;">
+          <h2 class="panel-title">Scanner Progress</h2>
+          <div id="scan-status" role="status" aria-live="polite" style="font-size: 0.8rem; font-weight: 600; color: var(--color-purple); margin-bottom: 0.75rem;">
+            Ready to scan.
+          </div>
+          <ul class="progress-steps">
+            <li id="step-1" class="step"><span>Validating source content</span><span class="step-status">⏳</span></li>
+            <li id="step-2" class="step"><span>Identifying stakeholders</span><span class="step-status">⏳</span></li>
+            <li id="step-3" class="step"><span>Mapping requirements</span><span class="step-status">⏳</span></li>
+            <li id="step-4" class="step"><span>Checking contradictions</span><span class="step-status">⏳</span></li>
+            <li id="step-5" class="step"><span>Inspecting ownership and handoffs</span><span class="step-status">⏳</span></li>
+            <li id="step-6" class="step"><span>Evaluating dependencies</span><span class="step-status">⏳</span></li>
+            <li id="step-7" class="step"><span>Calculating implementation readiness</span><span class="step-status">⏳</span></li>
+            <li id="step-8" class="step"><span>Preparing advisory report</span><span class="step-status">⏳</span></li>
+          </ul>
+        </section>
+      </aside>
+
+      <!-- Right Panel: Results & Dashboard -->
+      <section class="content-area">
+        
+        <!-- Empty State -->
+        <div id="results-empty" class="empty-state">
+          <div class="empty-icon">⚡</div>
+          <h3>Ready for Scan</h3>
+          <p>Select a demo preset scenario or paste your custom implementation notes, choose a profile, and click "Run Risk Analysis" to generate an evidence-backed advisory assessment.</p>
+        </div>
+
+        <!-- Dashboard Wrapper -->
+        <div id="results-dashboard" style="display: none;">
+          
+          <!-- Readiness & Summary Widget -->
+          <div class="dashboard-summary-grid">
+            
+            <!-- Readiness Score Card -->
+            <div class="summary-card readiness-card">
+              <h3 class="card-tag">READINESS INDEX</h3>
+              <div class="readiness-visual">
+                <div class="score-circle">
+                  <span id="score-display">100</span>
+                  <span class="score-max">/100</span>
+                </div>
+                <div>
+                  <h4 id="classification-display">Ready with minor controls</h4>
+                  <p class="score-subtext">Deterministic evaluation based on active risk impacts.</p>
+                  <div id="score-gate-info" class="gate-info-block" style="display: none;"></div>
+                </div>
+              </div>
+              <!-- Score Bar -->
+              <div class="score-bar-container">
+                <div id="score-bar-fill" class="score-bar-fill fill-green" style="width: 100%;"></div>
+              </div>
+            </div>
+
+            <!-- Score Penalty Breakdown -->
+            <div class="summary-card">
+              <h3 class="card-tag">SCORE PENALTY BREAKDOWN</h3>
+              <div class="penalty-breakdown-wrapper">
+                <table class="penalty-table">
+                  <caption>Score Penalty Breakdown</caption>
+                  <thead>
+                    <tr>
+                      <th scope="col">Factor</th>
+                      <th scope="col">Base Penalty</th>
+                      <th scope="col">Mitigation / Status</th>
+                      <th scope="col">Current</th>
+                    </tr>
+                  </thead>
+                  <tbody id="penalty-breakdown-body">
+                    <!-- Loaded dynamically -->
+                  </tbody>
+                </table>
+              </div>
+            </div>
+
+            <!-- Executive Quick Read -->
+            <div class="summary-card">
+              <h3 class="card-tag">EXECUTIVE QUICK READ</h3>
+              <div class="quick-read-content">
+                <strong>Expected Consequences of Proceeding Unresolved:</strong>
+                <p id="consequences-display" class="consequences-text">CRM routing blocks, timeline delays...</p>
+                <strong>Recommended Next Step:</strong>
+                <div class="next-step-badge" id="next-step-display">Convene lead definition workshop.</div>
+              </div>
+            </div>
+
+          </div>
+
+          <!-- Section Tabs Navigation -->
+          <nav class="tabs-nav" role="tablist" aria-label="Assessment Sections">
+            <button class="tab-button active" id="tab-risks-btn" data-section="risks" role="tab" aria-selected="true" aria-controls="sec-risks" tabindex="0">Risk Register</button>
+            <button class="tab-button" id="tab-stakeholders-btn" data-section="stakeholders" role="tab" aria-selected="false" aria-controls="sec-stakeholders" tabindex="-1">Stakeholder Alignment</button>
+            <button class="tab-button" id="tab-dependencies-btn" data-section="dependencies" role="tab" aria-selected="false" aria-controls="sec-dependencies" tabindex="-1">Dependency Matrix</button>
+            <button class="tab-button" id="tab-decisions-btn" data-section="decisions" role="tab" aria-selected="false" aria-controls="sec-decisions" tabindex="-1">Decision Log</button>
+            <button class="tab-button" id="tab-validation-btn" data-section="validation" role="tab" aria-selected="false" aria-controls="sec-validation" tabindex="-1">Validation Questions</button>
+            <button class="tab-button" id="tab-sequence-btn" data-section="sequence" role="tab" aria-selected="false" aria-controls="sec-sequence" tabindex="-1">Rollout Plan</button>
+          </nav>
+
+          <!-- TAB 1: RISK REGISTER -->
+          <div id="sec-risks" class="tab-section active-section" role="tabpanel" aria-labelledby="tab-risks-btn" tabindex="0">
+            <div class="filters-row">
+              <div class="filter-group">
+                <label for="filter-severity">Severity</label>
+                <select id="filter-severity">
+                  <option value="all">All Severities</option>
+                  <option value="critical">Critical</option>
+                  <option value="high">High</option>
+                  <option value="medium">Medium</option>
+                  <option value="low">Low</option>
+                </select>
+              </div>
+
+              <div class="filter-group">
+                <label for="filter-category">Category</label>
+                <select id="filter-category">
+                  <option value="all">All Categories</option>
+                  <option value="stakeholder-conflict">Stakeholder Conflict</option>
+                  <option value="missing-ownership">Missing Ownership</option>
+                  <option value="undefined-metrics">Undefined Metrics</option>
+                  <option value="unclear-handoffs">Unclear Handoffs</option>
+                  <option value="data-dependency">Data Dependency</option>
+                  <option value="configuration-dependency">Configuration Dependency</option>
+                  <option value="unvalidated-assumptions">Unvalidated Assumptions</option>
+                  <option value="scope-ambiguity">Scope Ambiguity</option>
+                  <option value="adoption-risk">Adoption Risk</option>
+                  <option value="compliance-risk">Compliance Risk</option>
+                </select>
+              </div>
+
+              <div class="filter-group">
+                <label for="filter-status">Status</label>
+                <select id="filter-status">
+                  <option value="all">All Statuses</option>
+                  <option value="open">Open</option>
+                  <option value="mitigating">Mitigating</option>
+                  <option value="resolved">Resolved</option>
+                  <option value="accepted">Accepted</option>
+                </select>
+              </div>
+            </div>
+
+            <div class="risk-cards-container" id="risk-cards-body">
+              <!-- Loaded dynamically -->
+            </div>
+          </div>
+
+          <!-- TAB 2: STAKEHOLDER ALIGNMENT -->
+          <div id="sec-stakeholders" class="tab-section" role="tabpanel" aria-labelledby="tab-stakeholders-btn" tabindex="0">
+            <div class="table-container">
+              <table class="data-table">
+                <caption>Stakeholder Goals and Conflict Mapping</caption>
+                <thead>
+                  <tr>
+                    <th scope="col">Stakeholder Team / Role</th>
+                    <th scope="col">Stated Goals</th>
+                    <th scope="col">Identified Conflicts</th>
+                    <th scope="col">Decision Authority</th>
+                  </tr>
+                </thead>
+                <tbody id="stakeholder-table-body">
+                  <!-- Loaded dynamically -->
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+          <!-- TAB 3: DEPENDENCY MATRIX -->
+          <div id="sec-dependencies" class="tab-section" role="tabpanel" aria-labelledby="tab-dependencies-btn" tabindex="0">
+            <div class="dependency-grid">
+              
+              <div class="dependency-column">
+                <h3 class="dep-column-title">Data Dependencies</h3>
+                <div class="dep-list" id="dep-list-data"></div>
+              </div>
+
+              <div class="dependency-column">
+                <h3 class="dep-column-title">Technical Dependencies</h3>
+                <div class="dep-list" id="dep-list-technical"></div>
+              </div>
+
+              <div class="dependency-column">
+                <h3 class="dep-column-title">Configuration Dependencies</h3>
+                <div class="dep-list" id="dep-list-configuration"></div>
+              </div>
+
+              <div class="dependency-column">
+                <h3 class="dep-column-title">People & Policy Dependencies</h3>
+                <div class="dep-list" id="dep-list-people"></div>
+              </div>
+
+            </div>
+          </div>
+
+          <!-- TAB 4: DECISION LOG -->
+          <div id="sec-decisions" class="tab-section" role="tabpanel" aria-labelledby="tab-decisions-btn" tabindex="0">
+            <div class="table-container">
+              <table class="data-table">
+                <caption>Required Implementation Decisions</caption>
+                <thead>
+                  <tr>
+                    <th scope="col">Decision Required</th>
+                    <th scope="col">Suggested Owner</th>
+                    <th scope="col">Related Risks</th>
+                    <th scope="col">Consequence of Delay</th>
+                  </tr>
+                </thead>
+                <tbody id="decision-table-body">
+                  <!-- Loaded dynamically -->
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+          <!-- TAB 5: VALIDATION QUESTIONS -->
+          <div id="sec-validation" class="tab-section" role="tabpanel" aria-labelledby="tab-validation-btn" tabindex="0">
+            <div class="validation-questions-wrapper" id="validation-questions-body">
+              <!-- Loaded dynamically -->
+            </div>
+          </div>
+
+          <!-- TAB 6: ROLLOUT PLAN -->
+          <div id="sec-sequence" class="tab-section" role="tabpanel" aria-labelledby="tab-sequence-btn" tabindex="0">
+            <div class="rollout-roadmap-wrapper">
+              
+              <div class="roadmap-phase-card">
+                <h3 class="phase-badge phase-30">30-Day Launch Gate</h3>
+                <ul class="phase-actions" id="rollout-30-body"></ul>
+              </div>
+
+              <div class="roadmap-phase-card">
+                <h3 class="phase-badge phase-60">60-Day Integration Gate</h3>
+                <ul class="phase-actions" id="rollout-60-body"></ul>
+              </div>
+
+              <div class="roadmap-phase-card">
+                <h3 class="phase-badge phase-90">90-Day Stabilization Gate</h3>
+                <ul class="phase-actions" id="rollout-90-body"></ul>
+              </div>
+
+            </div>
+          </div>
+
+        </div>
+      </section>
+
+    </main>
+
+    <!-- PRINT MEMO LAYOUT (Hidden on screen, visible on print) -->
+    <div class="print-memo visible-on-print-only">
+      <div class="memo-header">
+        <h1 class="memo-title">EXECUTIVE IMPLEMENTATION ADVISORY MEMO</h1>
+        <table class="memo-meta">
+          <caption>Memo Metadata</caption>
+          <tr>
+            <th scope="row">Project Name:</th>
+            <td id="print-meta-project">Customer AI Rollout</td>
+            <th scope="row">Assessment Date:</th>
+            <td id="print-meta-date">2026-06-16</td>
+          </tr>
+          <tr>
+            <th scope="row">Analysis Profile:</th>
+            <td id="print-meta-profile">General SaaS Implementation</td>
+            <th scope="row">Current Readiness:</th>
+            <td id="print-meta-readiness">100/100 (Ready with minor controls)</td>
+          </tr>
+        </table>
+      </div>
+
+      <hr class="memo-divider">
+
+      <div class="memo-section">
+        <h2>Executive Summary</h2>
+        <p id="print-summary-text">Loading...</p>
+      </div>
+
+      <div class="memo-section">
+        <h2>Top 3 Critical Blockers</h2>
+        <ol id="print-blockers-list"></ol>
+      </div>
+
+      <div class="memo-section">
+        <h2>Readiness Score & Penalty Breakdown</h2>
+        <table class="memo-table">
+          <caption>Readiness Score & Penalty Breakdown</caption>
+          <thead>
+            <tr>
+              <th scope="col">Risk Detail</th>
+              <th scope="col">Base Penalty</th>
+              <th scope="col">Status</th>
+              <th scope="col">Adjusted Penalty</th>
+            </tr>
+          </thead>
+          <tbody id="print-penalty-body"></tbody>
+        </table>
+      </div>
+
+      <div class="memo-section page-break">
+        <h2>Detailed Risk Register</h2>
+        <div id="print-risks-body"></div>
+      </div>
+
+      <div class="memo-section page-break">
+        <h2>Decisions Required & Ownership</h2>
+        <table class="memo-table">
+          <caption>Decisions Required & Ownership</caption>
+          <thead>
+            <tr>
+              <th scope="col">Decision Required</th>
+              <th scope="col">Suggested Owner</th>
+              <th scope="col">Consequence of Delay</th>
+            </tr>
+          </thead>
+          <tbody id="print-decisions-body"></tbody>
+        </table>
+      </div>
+
+      <div class="memo-section">
+        <h2>Dependencies Matrix</h2>
+        <div id="print-dependencies-body"></div>
+      </div>
+
+      <div class="memo-section page-break">
+        <h2>Customer Validation Questionnaire</h2>
+        <div id="print-validation-body"></div>
+      </div>
+
+      <div class="memo-section">
+        <h2>Recommended 30/60/90-Day Rollout Plan</h2>
+        <div id="print-rollout-body"></div>
+      </div>
+
+      <div class="memo-footer">
+        <p>Report generated by RiskScan Implementation Readiness Scanner — deterministic demo mode. Demonstration environment. Do not submit confidential, personal, or proprietary customer information.</p>
+      </div>
+    </div>
+
+  </div>
+
+  <script src="/lib/validation.js"></script>
+  <script src="/lib/scoring.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>

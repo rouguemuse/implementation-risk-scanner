@@ -1,0 +1,60 @@
+{
+  "baseScore": 100,
+  "categories": [
+    "stakeholder-conflict",
+    "missing-ownership",
+    "undefined-metrics",
+    "unclear-handoffs",
+    "data-dependency",
+    "configuration-dependency",
+    "unvalidated-assumptions",
+    "scope-ambiguity",
+    "adoption-risk",
+    "compliance-risk"
+  ],
+  "severities": [
+    "critical",
+    "high",
+    "medium",
+    "low"
+  ],
+  "penalties": {
+    "severity": {
+      "critical": 15,
+      "high": 8,
+      "medium": 4,
+      "low": 1
+    },
+    "unconfirmedOwner": 3,
+    "undefinedMetric": 5,
+    "unresolvedStakeholderConflict": 5,
+    "missingDependency": 4
+  },
+  "residualPenaltyMultiplier": 0.50,
+  "classifications": [
+    {
+      "min": 85,
+      "max": 100,
+      "label": "Ready with minor controls",
+      "class": "ready"
+    },
+    {
+      "min": 70,
+      "max": 84,
+      "label": "Conditionally ready",
+      "class": "conditional"
+    },
+    {
+      "min": 50,
+      "max": 69,
+      "label": "Significant preparation required",
+      "class": "preparation"
+    },
+    {
+      "min": 0,
+      "max": 49,
+      "label": "High implementation risk",
+      "class": "risk"
+    }
+  ]
+}

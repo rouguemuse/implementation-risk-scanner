@@ -1,0 +1,160 @@
+{
+  "summary": "The Multi-Location Operations Platform rollout faces misalignment between corporate standardization goals and regional operational realities. Regional managers demand local customization due to differing regulatory and site-specific data fields. Compounding this, there is no ownership defined for employee training, and the rollout sequencing (which locations launch when) remains undecided.",
+  "topBlockers": [
+    "Misalignment between standardized corporate workflows and customized regional requirements.",
+    "Differing data schemas and required fields across locations, causing reporting fragmentation.",
+    "Undefined training ownership and rollout sequencing plan."
+  ],
+  "risks": [
+    {
+      "id": "risk-001",
+      "title": "Corporate standardization vs regional customization conflict",
+      "category": "stakeholder-conflict",
+      "severity": "high",
+      "confidence": 0.94,
+      "evidence": [
+        {
+          "excerpt": "Corporate expects standardized workflows. Regional managers require local customization.",
+          "sourceReference": "Operational Survey Notes, Page 3"
+        }
+      ],
+      "businessImpact": "High chance of regional mutiny or poor system adoption. If corporate forces a rigid template, regional managers will use offline workarounds (e.g. spreadsheets), rendering corporate data analytics inaccurate.",
+      "reasoning": "A core conflict between top-down data normalization goals and bottom-up operational variance.",
+      "recommendedAction": "Implement a 'core template plus extensions' model. Allow local configurations for up to 20% of data fields, while keeping the core 80% standardized.",
+      "requiredDecision": "Customization threshold and governance policy",
+      "suggestedOwner": "Director of Global Operations",
+      "ownerStatus": "unconfirmed",
+      "validationQuestion": "What specific regional workflows are legally required to differ from the corporate template?",
+      "status": "open"
+    },
+    {
+      "id": "risk-002",
+      "title": "Incompatible local data schema requirements",
+      "category": "data-dependency",
+      "severity": "critical",
+      "confidence": 0.91,
+      "evidence": [
+        {
+          "excerpt": "Required data fields differ between locations.",
+          "sourceReference": "Data Dictionary Audit, Appendix A"
+        }
+      ],
+      "businessImpact": "System configuration blocks or reporting failures. Database syncs will fail if mandatory fields are null or formatted differently across locations.",
+      "reasoning": "Missing field mapping dependencies between regional legacy systems and the new standardized data warehouse schema.",
+      "recommendedAction": "Map the data schemas for all regions. Standardize common fields and create local flex fields for location-specific data compliance.",
+      "requiredDecision": "Data dictionary standardization approval",
+      "suggestedOwner": "Data Architect",
+      "ownerStatus": "unconfirmed",
+      "validationQuestion": "Can we map the differing local data fields into a flexible JSON metadata field in the database?",
+      "status": "open"
+    },
+    {
+      "id": "risk-003",
+      "title": "Undefined training ownership",
+      "category": "missing-ownership",
+      "severity": "high",
+      "confidence": 0.88,
+      "evidence": [
+        {
+          "excerpt": "Training ownership and rollout sequencing are undefined.",
+          "sourceReference": "Rollout Strategy Deck, slide 8"
+        }
+      ],
+      "businessImpact": "Failure of user adoption. Site managers will not know who is responsible for training materials, resulting in untrained employees and high error rates.",
+      "reasoning": "Critical enablement tasks are unassigned, leading to confusion and deferred accountability.",
+      "recommendedAction": "Assign a Lead Enablement Manager to own training. Appoint regional 'super users' at each location to manage peer training.",
+      "requiredDecision": "Assignment of Global Training Lead",
+      "suggestedOwner": "VP of Human Resources",
+      "ownerStatus": "unconfirmed",
+      "validationQuestion": "Who will fund the training hours for the regional staff?",
+      "status": "open"
+    },
+    {
+      "id": "risk-004",
+      "title": "Lack of rollout sequencing plan",
+      "category": "scope-ambiguity",
+      "severity": "medium",
+      "confidence": 0.85,
+      "evidence": [
+        {
+          "excerpt": "Training ownership and rollout sequencing are undefined.",
+          "sourceReference": "Rollout Strategy Deck, slide 8"
+        }
+      ],
+      "businessImpact": "Operational chaos. Attempting a 'big bang' launch across all locations simultaneously will overwhelm the support desk.",
+      "reasoning": "Rollout phases are not sequenced, meaning resources cannot be concentrated where needed.",
+      "recommendedAction": "Design a phased rollout schedule. Start with a single pilot location in Month 1, followed by a regional wave in Month 2, and global launch in Month 3.",
+      "requiredDecision": "Phased rollout sequence approval",
+      "suggestedOwner": "Program Manager",
+      "ownerStatus": "unconfirmed",
+      "validationQuestion": "Which location is best suited (most stable operations) to serve as our initial pilot site?",
+      "status": "open"
+    }
+  ],
+  "stakeholders": [
+    {
+      "name": "Corporate Leadership",
+      "role": "Governance & Reporting",
+      "goals": ["Standardize reporting across all global divisions", "Reduce IT maintenance costs by consolidating platforms"],
+      "conflicts": ["Imposing strict global standards that ignore regional operational realities"],
+      "authority": "Owns global IT policy and funding"
+    },
+    {
+      "name": "Regional Managers",
+      "role": "Local Operations",
+      "goals": ["Maintain local operational velocity", "Ensure compliance with local laws and labor practices"],
+      "conflicts": ["Requires customized workflows and data fields"],
+      "authority": "Owns site adoption and can bypass or sabotage corporate software mandates"
+    }
+  ],
+  "dependencies": [
+    {
+      "name": "Regional Legacy API Extractors",
+      "type": "data-dependency",
+      "description": "Extractors to pull data from legacy databases in different locations into the central pipeline.",
+      "status": "missing"
+    },
+    {
+      "name": "Localization Flex-Field Engine",
+      "type": "configuration-dependency",
+      "description": "System config that enables specific UI forms to dynamically show/hide fields based on location.",
+      "status": "missing"
+    }
+  ],
+  "decisions": [
+    {
+      "id": "dec-001",
+      "decision": "Determine global standard vs local flexibility governance rules",
+      "relatedRisks": ["risk-001"],
+      "suggestedOwner": "Director of Global Operations",
+      "consequence": "Delays will cause configuration rework and friction with local managers."
+    }
+  ],
+  "validationQuestions": [
+    {
+      "category": "configuration",
+      "question": "What is the process for a regional manager to request a new custom data field?"
+    },
+    {
+      "category": "rollout",
+      "question": "Are there specific black-out dates (e.g. holiday sales seasons) for locations during rollout?"
+    }
+  ],
+  "rolloutRecommendations": [
+    {
+      "phase": "30-day",
+      "action": "Complete data dictionary audit across all regional sites and draft core field schema.",
+      "owner": "Data Architect"
+    },
+    {
+      "phase": "60-day",
+      "action": "Select pilot location and deploy the core system template with super-user training.",
+      "owner": "Program Manager"
+    },
+    {
+      "phase": "90-day",
+      "action": "Review pilot feedback and start phased wave deployments across remaining regions.",
+      "owner": "Director of Global Operations"
+    }
+  ]
+}
