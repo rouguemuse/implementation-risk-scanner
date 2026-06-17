@@ -1,3 +1,13 @@
+function escapeHTML(str) {
+  if (str === null || str === undefined) return '';
+  return String(str)
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#39;');
+}
+
 // Demo Scenario Text Database
 const DEMO_TEXTS = {
   'sales-marketing-conflict': `CONCORDE ENTERPRISES - LEAD INTEGRATION RULES
@@ -332,8 +342,8 @@ const App = {
       if (this.currentResult.gateApplied) {
         gateInfoEl.style.display = 'block';
         gateInfoEl.innerHTML = `
-          <strong>Critical-blocker cap applied: ${this.currentResult.computedScore}</strong> (calculated score: ${this.currentResult.calculatedScore})<br>
-          <small>${this.currentResult.gateReason}</small>
+          <strong>Critical-blocker cap applied: ${escapeHTML(this.currentResult.computedScore)}</strong> (calculated score: ${escapeHTML(this.currentResult.calculatedScore)})<br>
+          <small>${escapeHTML(this.currentResult.gateReason)}</small>
         `;
       } else {
         gateInfoEl.style.display = 'none';
@@ -350,10 +360,10 @@ const App = {
       this.currentResult.computedPenalties.forEach(p => {
         const tr = document.createElement('tr');
         tr.innerHTML = `
-          <td><strong>${p.factor}</strong></td>
-          <td>${p.basePenalty}</td>
-          <td><span class="badge ${p.status.includes('Resolved') && !p.status.includes('Missing') && !p.status.includes('Incomplete') ? 'badge-green' : p.status.includes('Accepted') ? 'badge-purple' : 'badge-amber'}">${p.status}</span></td>
-          <td style="color: var(--color-red); font-weight:700;">${p.current}</td>
+          <td><strong>${escapeHTML(p.factor)}</strong></td>
+          <td>${escapeHTML(p.basePenalty)}</td>
+          <td><span class="badge ${p.status.includes('Resolved') && !p.status.includes('Missing') && !p.status.includes('Incomplete') ? 'badge-green' : p.status.includes('Accepted') ? 'badge-purple' : 'badge-amber'}">${escapeHTML(p.status)}</span></td>
+          <td style="color: var(--color-red); font-weight:700;">${escapeHTML(p.current)}</td>
         `;
         penaltyBody.appendChild(tr);
       });
@@ -364,7 +374,7 @@ const App = {
           <td><strong style="color:var(--color-red);">Gate Cap Adjustment</strong></td>
           <td>-</td>
           <td><span class="badge badge-red">Blocker Capped</span></td>
-          <td style="color: var(--color-red); font-weight:700;">-${this.currentResult.gateAdjustment}</td>
+          <td style="color: var(--color-red); font-weight:700;">-${escapeHTML(this.currentResult.gateAdjustment)}</td>
         `;
         penaltyBody.appendChild(tr);
       }
@@ -383,10 +393,10 @@ const App = {
     this.currentResult.stakeholders.forEach(sh => {
       const tr = document.createElement('tr');
       tr.innerHTML = `
-        <td><strong>${sh.name}</strong><br><small style="color:var(--text-muted);">${sh.role}</small></td>
-        <td><ul style="padding-left:1rem;">${sh.goals.map(g => `<li>${g}</li>`).join('')}</ul></td>
-        <td style="color:var(--color-red);"><ul style="padding-left:1rem;">${sh.conflicts.map(c => `<li>${c}</li>`).join('')}</ul></td>
-        <td>${sh.authority}</td>
+        <td><strong>${escapeHTML(sh.name)}</strong><br><small style="color:var(--text-muted);">${escapeHTML(sh.role)}</small></td>
+        <td><ul style="padding-left:1rem;">${sh.goals.map(g => `<li>${escapeHTML(g)}</li>`).join('')}</ul></td>
+        <td style="color:var(--color-red);"><ul style="padding-left:1rem;">${sh.conflicts.map(c => `<li>${escapeHTML(c)}</li>`).join('')}</ul></td>
+        <td>${escapeHTML(sh.authority)}</td>
       `;
       stakeholderBody.appendChild(tr);
     });
@@ -402,19 +412,25 @@ const App = {
       } else {
         filteredDeps.forEach(dep => {
           const div = document.createElement('div');
-          div.className = `dep-item status-${dep.status}`;
+          div.className = `dep-item status-${escapeHTML(dep.status)}`;
           div.innerHTML = `
             <div class="dep-item-header">
-              <strong>${dep.name}</strong>
-              <span class="badge ${dep.status === 'resolved' ? 'badge-green' : 'badge-red'}">${dep.status}</span>
+              <strong>${escapeHTML(dep.name)}</strong>
+              <span class="badge ${dep.status === 'resolved' ? 'badge-green' : 'badge-red'}">${escapeHTML(dep.status)}</span>
             </div>
-            <p>${dep.description}</p>
+            <p>${escapeHTML(dep.description)}</p>
             <div style="margin-top: 0.5rem; display:flex; gap:0.5rem;">
-              <button class="btn btn-secondary" style="padding:0.15rem 0.4rem; font-size:0.65rem;" onclick="App.toggleDependencyStatus('${dep.name}')">
+              <button class="btn btn-secondary" style="padding:0.15rem 0.4rem; font-size:0.65rem;">
                 Mark ${dep.status === 'resolved' ? 'Missing' : 'Resolved'}
               </button>
             </div>
           `;
+          
+          const btn = div.querySelector('button');
+          btn.addEventListener('click', () => {
+            App.toggleDependencyStatus(dep.name);
+          });
+          
           el.appendChild(div);
         });
       }
@@ -432,10 +448,10 @@ const App = {
     this.currentResult.decisions.forEach(dec => {
       const tr = document.createElement('tr');
       tr.innerHTML = `
-        <td><strong>${dec.decision}</strong></td>
-        <td><span class="badge badge-purple">${dec.suggestedOwner}</span></td>
-        <td>${dec.relatedRisks.join(', ')}</td>
-        <td style="color:var(--color-red);">${dec.consequence}</td>
+        <td><strong>${escapeHTML(dec.decision)}</strong></td>
+        <td><span class="badge badge-purple">${escapeHTML(dec.suggestedOwner)}</span></td>
+        <td>${dec.relatedRisks.map(r => escapeHTML(r)).join(', ')}</td>
+        <td style="color:var(--color-red);">${escapeHTML(dec.consequence)}</td>
       `;
       decisionBody.appendChild(tr);
     });
@@ -447,8 +463,8 @@ const App = {
       const div = document.createElement('div');
       div.className = 'validation-question-card';
       div.innerHTML = `
-        <span class="badge badge-purple" style="min-width:100px; text-align:center;">${q.category}</span>
-        <p style="font-size:0.85rem; font-weight:600;">${q.question}</p>
+        <span class="badge badge-purple" style="min-width:100px; text-align:center;">${escapeHTML(q.category)}</span>
+        <p style="font-size:0.85rem; font-weight:600;">${escapeHTML(q.question)}</p>
       `;
       validationBody.appendChild(div);
     });
@@ -462,8 +478,8 @@ const App = {
         const li = document.createElement('li');
         li.className = 'phase-action-item';
         li.innerHTML = `
-          ${rec.action}
-          <span class="phase-action-owner">Owner: ${rec.owner}</span>
+          ${escapeHTML(rec.action)}
+          <span class="phase-action-owner">Owner: ${escapeHTML(rec.owner)}</span>
         `;
         el.appendChild(li);
       });
@@ -495,7 +511,7 @@ const App = {
       
       const evidenceHTML = risk.evidence.map(ev => `
         <div class="evidence-quote">
-          "${ev.excerpt}" — <strong style="color:var(--text-main);">${ev.sourceReference}</strong>
+          "${escapeHTML(ev.excerpt)}" — <strong style="color:var(--text-main);">${escapeHTML(ev.sourceReference)}</strong>
         </div>
       `).join('');
 
@@ -506,18 +522,18 @@ const App = {
           <div class="risk-title-wrapper">
             <span class="badge ${
               risk.severity === 'critical' || risk.severity === 'high' ? 'badge-red' : 'badge-amber'
-            }">${risk.severity}</span>
-            <h3>${risk.title}</h3>
+            }">${escapeHTML(risk.severity)}</span>
+            <h3>${escapeHTML(risk.title)}</h3>
           </div>
           <div class="risk-meta-badges">
-            <span class="badge badge-purple">${risk.category}</span>
+            <span class="badge badge-purple">${escapeHTML(risk.category)}</span>
             <span class="risk-confidence-badge">Confidence: ${(risk.confidence * 100).toFixed(0)}%</span>
           </div>
         </div>
         <div class="risk-card-body">
           <div class="risk-section-block">
             <strong>Business Impact</strong>
-            <p>${risk.businessImpact}</p>
+            <p>${escapeHTML(risk.businessImpact)}</p>
           </div>
           <div class="risk-section-block">
             <strong>Evidence</strong>
@@ -525,7 +541,7 @@ const App = {
           </div>
           <div class="risk-section-block">
             <strong>Mitigation Strategy</strong>
-            <p>${risk.recommendedAction}</p>
+            <p>${escapeHTML(risk.recommendedAction)}</p>
           </div>
           
           ${hasValidationWarning ? `
@@ -548,7 +564,7 @@ const App = {
             
             <div class="control-item">
               <label for="owner-${index}">Assigned Owner</label>
-              <input type="text" id="owner-${index}" value="${risk.suggestedOwner}" onchange="App.updateRiskField(${index}, 'suggestedOwner', this.value)">
+              <input type="text" id="owner-${index}" value="${escapeHTML(risk.suggestedOwner)}" onchange="App.updateRiskField(${index}, 'suggestedOwner', this.value)">
               
               <label style="margin-left:0.5rem; display:flex; align-items:center; gap:0.25rem;">
                 <input type="checkbox" ${risk.ownerStatus === 'confirmed' ? 'checked' : ''} onchange="App.updateRiskField(${index}, 'ownerStatus', this.checked ? 'confirmed' : 'unconfirmed')">
@@ -557,8 +573,8 @@ const App = {
             </div>
 
             <div class="control-item" style="flex: 1; min-width: 280px;">
-              <label for="note-${index}">Resolution Note</label>
-              <input type="text" id="note-${index}" placeholder="Enter resolution notes..." value="${risk.resolutionNote || ''}" onchange="App.updateRiskField(${index}, 'resolutionNote', this.value)">
+               <label for="note-${index}">Resolution Note</label>
+              <input type="text" id="note-${index}" placeholder="Enter resolution notes..." value="${escapeHTML(risk.resolutionNote || '')}" onchange="App.updateRiskField(${index}, 'resolutionNote', this.value)">
             </div>
           </div>
         </div>
@@ -620,10 +636,10 @@ const App = {
     this.currentResult.computedPenalties.forEach(p => {
       const tr = document.createElement('tr');
       tr.innerHTML = `
-        <td><strong>${p.factor}</strong></td>
-        <td>${p.basePenalty}</td>
-        <td>${p.status}</td>
-        <td style="color:#ef4444; font-weight:bold;">${p.current}</td>
+        <td><strong>${escapeHTML(p.factor)}</strong></td>
+        <td>${escapeHTML(p.basePenalty)}</td>
+        <td>${escapeHTML(p.status)}</td>
+        <td style="color:#ef4444; font-weight:bold;">${escapeHTML(p.current)}</td>
       `;
       printPenaltyBody.appendChild(tr);
     });
@@ -634,7 +650,7 @@ const App = {
         <td><strong style="color:#ef4444;">Gate Cap Adjustment</strong></td>
         <td>-</td>
         <td>Blocker Capped</td>
-        <td style="color:#ef4444; font-weight:bold;">-${this.currentResult.gateAdjustment}</td>
+        <td style="color:#ef4444; font-weight:bold;">-${escapeHTML(this.currentResult.gateAdjustment)}</td>
       `;
       printPenaltyBody.appendChild(tr);
     }
@@ -648,22 +664,22 @@ const App = {
       
       const evidenceHTML = risk.evidence.map(e => `
         <div class="print-evidence-quote">
-          "${e.excerpt}" (${e.sourceReference})
+          "${escapeHTML(e.excerpt)}" (${escapeHTML(e.sourceReference})
         </div>
       `).join('');
 
       div.innerHTML = `
         <div class="print-risk-title">
-          <span>[${risk.severity.toUpperCase()}] ${risk.title}</span>
-          <span style="font-size:9pt; font-weight:normal; color:#666;">Status: ${risk.status.toUpperCase()} | Category: ${risk.category}</span>
+          <span>[${escapeHTML(risk.severity.toUpperCase())}] ${escapeHTML(risk.title)}</span>
+          <span style="font-size:9pt; font-weight:normal; color:#666;">Status: ${escapeHTML(risk.status.toUpperCase())} | Category: ${escapeHTML(risk.category)}</span>
         </div>
         <div style="margin-top: 5px; font-size: 9.5pt;">
-          <strong>Business Impact:</strong> ${risk.businessImpact}<br>
-          <strong>Reasoning:</strong> ${risk.reasoning}<br>
-          <strong>Mitigation:</strong> ${risk.recommendedAction}<br>
-          <strong>Owner:</strong> ${risk.suggestedOwner} (${risk.ownerStatus})
-          ${risk.resolutionNote ? `<br><strong>Resolution Note:</strong> ${risk.resolutionNote}` : ''}
-          ${risk.resolvedAt ? `<br><strong>Resolved At:</strong> ${risk.resolvedAt}` : ''}
+          <strong>Business Impact:</strong> ${escapeHTML(risk.businessImpact)}<br>
+          <strong>Reasoning:</strong> ${escapeHTML(risk.reasoning)}<br>
+          <strong>Mitigation:</strong> ${escapeHTML(risk.recommendedAction)}<br>
+          <strong>Owner:</strong> ${escapeHTML(risk.suggestedOwner)} (${escapeHTML(risk.ownerStatus)})
+          ${risk.resolutionNote ? `<br><strong>Resolution Note:</strong> ${escapeHTML(risk.resolutionNote)}` : ''}
+          ${risk.resolvedAt ? `<br><strong>Resolved At:</strong> ${escapeHTML(risk.resolvedAt)}` : ''}
           ${evidenceHTML}
         </div>
       `;
@@ -676,9 +692,9 @@ const App = {
     this.currentResult.decisions.forEach(dec => {
       const tr = document.createElement('tr');
       tr.innerHTML = `
-        <td><strong>${dec.decision}</strong></td>
-        <td>${dec.suggestedOwner}</td>
-        <td>${dec.consequence}</td>
+        <td><strong>${escapeHTML(dec.decision)}</strong></td>
+        <td>${escapeHTML(dec.suggestedOwner)}</td>
+        <td>${escapeHTML(dec.consequence)}</td>
       `;
       printDecisionsBody.appendChild(tr);
     });
@@ -688,24 +704,28 @@ const App = {
     printDepsBody.innerHTML = '';
     this.currentResult.dependencies.forEach(d => {
       const statusColor = d.status === 'resolved' ? '#166534' : '#ef4444';
-      printDepsBody.innerHTML += `
-        <p style="font-size:9.5pt; margin-bottom:5px;">
-          <strong>[${d.type.toUpperCase()}] ${d.name}</strong> - 
-          <span style="color:${statusColor}; font-weight:bold;">${d.status.toUpperCase()}</span>: 
-          ${d.description}
-        </p>
+      const p = document.createElement('p');
+      p.style.fontSize = '9.5pt';
+      p.style.marginBottom = '5px';
+      p.innerHTML = `
+        <strong>[${escapeHTML(d.type.toUpperCase())}] ${escapeHTML(d.name)}</strong> - 
+        <span style="color:${statusColor}; font-weight:bold;">${escapeHTML(d.status.toUpperCase())}</span>: 
+        ${escapeHTML(d.description)}
       `;
+      printDepsBody.appendChild(p);
     });
 
     // Validation Questions
     const printValBody = document.getElementById('print-validation-body');
     printValBody.innerHTML = '';
     this.currentResult.validationQuestions.forEach(q => {
-      printValBody.innerHTML += `
-        <p style="font-size:9.5pt; margin-bottom:5px;">
-          <strong>[${q.category.toUpperCase()}]</strong> ${q.question}
-        </p>
+      const p = document.createElement('p');
+      p.style.fontSize = '9.5pt';
+      p.style.marginBottom = '5px';
+      p.innerHTML = `
+        <strong>[${escapeHTML(q.category.toUpperCase())}]</strong> ${escapeHTML(q.question)}
       `;
+      printValBody.appendChild(p);
     });
 
     // Rollout Recommendations
@@ -714,13 +734,18 @@ const App = {
     const renderPrintPhase = (phaseLabel, phaseId) => {
       const items = this.currentResult.rolloutRecommendations.filter(r => r.phase === phaseId);
       if (items.length > 0) {
-        printRolloutBody.innerHTML += `<h4>${phaseLabel}</h4>`;
+        const h4 = document.createElement('h4');
+        h4.textContent = phaseLabel;
+        printRolloutBody.appendChild(h4);
         items.forEach(i => {
-          printRolloutBody.innerHTML += `
-            <p style="font-size:9.5pt; margin-bottom:4px; padding-left:10px;">
-              ▪ ${i.action} (Owner: ${i.owner})
-            </p>
+          const p = document.createElement('p');
+          p.style.fontSize = '9.5pt';
+          p.style.marginBottom = '4px';
+          p.style.paddingLeft = '10px';
+          p.innerHTML = `
+            ▪ ${escapeHTML(i.action)} (Owner: ${escapeHTML(i.owner)})
           `;
+          printRolloutBody.appendChild(p);
         });
       }
     };
