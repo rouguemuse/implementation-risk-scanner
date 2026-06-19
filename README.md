@@ -1,8 +1,56 @@
-# RiskScan — Implementation Readiness Scanner
+# Implementation Risk Scanner — Customer Onboarding & Operational Readiness
 
-RiskScan analyzes implementation plans, onboarding notes, rollout requirements, and operational-readiness documents for conditions that can delay delivery, block launch, weaken adoption, or leave critical work without accountable ownership.
+### Role: Product Strategist, Implementation Risk Analyst & Full-Stack Prototype Builder
+
+**AI-assisted implementation readiness scanner that identifies missing owners, unclear requirements, dependency risks, adoption gaps, and unresolved launch blockers before go-live.**
 
 > Fictional implementation case study. Included organizations, people, data, metrics, and outcomes are simulated for portfolio demonstration purposes.
+
+## Overview
+
+Designed and built an implementation-risk and operational-readiness scanner for customer onboarding, rollout planning, and implementation review.
+
+The system analyzes discovery notes, implementation plans, and readiness documents for conditions that can delay delivery, block launch, weaken adoption, or leave critical work without accountable ownership.
+
+Gemini extracts evidence and suggests classifications, but the application remains authoritative. Independent validation and deterministic rules calculate severity, progression blockers, launch blockers, readiness scores, and score caps. The reviewer workflow then allows a human to adjust those determinations without erasing the calculated result.
+
+Version 0.2.0 completed live Gemini analysis and passed all 12 evaluation scenarios along with the deterministic test suite. Phase 3 adds the human review, comparison, ownership, and export layer.
+
+## Roadmap
+
+### Phase 1 — Deterministic Foundation · Completed
+
+- Independent validation and scoring
+- Resolution-state requirements
+- Readiness score caps for unresolved blockers
+- Demo-provider restrictions
+- Automated server and scoring tests
+- Accessible keyboard navigation
+- Production-quality interface redesign
+
+### Phase 2 — Live Gemini Analysis · Completed
+
+- Structured Gemini evidence extraction
+- Fixed onboarding-risk taxonomy
+- Condition-specific severity rules
+- Deterministic progression and launch blockers
+- Stable finding IDs and dependency remapping
+- Retry, timeout, and provider-error handling
+- Independent domain validation
+- Twelve golden evaluation scenarios
+- 12/12 live evaluation scenarios passed
+- Version 0.2.0 tagged and released
+
+### Phase 3 — Reviewer Workflow · In Review
+
+- Drag-and-drop plan and registry intake
+- Human severity and blocker decisions
+- Owner assignment, target dates, and resolution notes
+- Scan-to-scan risk comparison
+- Versioned registry export and validated import
+- Executive Markdown brief export
+- Reviewer-aware print memorandum
+- Dedicated reviewer regression tests and CI
 
 ## Current capabilities
 
@@ -19,6 +67,7 @@ RiskScan analyzes implementation plans, onboarding notes, rollout requirements, 
 - Deterministic fixture mode supports repeatable demonstrations and automated tests.
 - Gemini mode accepts custom implementation material and returns structured JSON that is independently validated before use.
 - Customer material remains separated from the fixed system instruction and is treated as untrusted content.
+- Provider timeouts, condition-code constraints, and the live evaluation harness remain preserved from Phase 2.
 
 ### Phase 3 reviewer workflow
 
@@ -64,12 +113,16 @@ Imported JSON is rejected unless its format version is supported and its complet
 ## Project structure
 
 ```text
+├── .env.example
 ├── config.json
 ├── package.json
 ├── server.js
 ├── lib/
+│   ├── analysis-schema.js
 │   ├── scoring.js
-│   └── validation.js
+│   ├── validation.js
+│   └── providers/
+│       └── gemini.js
 ├── public/
 │   ├── app.js                       # Phase 3 loader
 │   ├── app-core.js                  # Preserved Phase 2 application
@@ -80,8 +133,10 @@ Imported JSON is rejected unless its format version is supported and its complet
 │   └── styles.css
 └── tests/
     ├── fixtures/
+    ├── reports/
     ├── run-tests.js                 # Core deterministic and API suite
-    └── run-reviewer-tests.js        # Reviewer override/import suite
+    ├── run-reviewer-tests.js        # Reviewer override/import suite
+    └── run-evaluation.js            # Live model-quality harness
 ```
 
 ## Run locally
@@ -105,13 +160,18 @@ Demo mode accepts the included deterministic scenarios. Editing a preset into ar
 
 ### Gemini mode
 
-Configure the provider on the server, not in browser code:
+Copy `.env.example` to `.env`, configure the provider on the server, and run the application. Never place provider credentials in browser code.
 
-```bash
+```text
 ANALYSIS_PROVIDER=gemini
 GEMINI_API_KEY=<server-side value>
 GEMINI_MODEL=<supported model identifier>
-node server.js
+```
+
+The model-quality evaluation harness can be run with:
+
+```bash
+node tests/run-evaluation.js
 ```
 
 ## Tests
