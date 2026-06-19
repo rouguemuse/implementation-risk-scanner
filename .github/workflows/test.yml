@@ -24,10 +24,6 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: 20
-          cache: npm
-
-      - name: Install package metadata
-        run: npm install --ignore-scripts
 
       - name: Run reviewer and core test suites
         run: npm test
