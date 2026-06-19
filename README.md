@@ -1,113 +1,148 @@
 # RiskScan — Implementation Readiness Scanner
 
-An implementation advisory web application that ingests discovery notes, meeting transcripts, or rollout requirements, analyzes them for operational risks, and calculates an evidence-backed readiness score.
+RiskScan analyzes implementation plans, onboarding notes, rollout requirements, and operational-readiness documents for conditions that can delay delivery, block launch, weaken adoption, or leave critical work without accountable ownership.
 
-> *Disclaimer: Fictional implementation case study. All organizations, people, locations, data, metrics, and outcomes shown in this project are simulated for portfolio demonstration purposes.*
+> Fictional implementation case study. Included organizations, people, data, metrics, and outcomes are simulated for portfolio demonstration purposes.
 
----
+## Current capabilities
 
-## Features
+### Deterministic analysis and scoring
 
-- **Ingestion & Presets**: Ingests custom text or runs pre-loaded scenarios (CRM Synchronization, AI Support Agent, Location Standardization) to evaluate readiness.
-- **Structured Risk Registry**: Maps risks across 10 operational categories (stakeholder conflict, missing ownership, undefined metrics, data/configuration dependencies, adoption risks, compliance risks, etc.).
-- **Calculated Scoring & Gates**:
-  - Automatically calculates penalty deductions based on risk severity, unconfirmed ownership, metric gaps, unresolved stakeholder conflicts, and missing dependencies.
-  - Implements strict **Readiness Score Blocker Gates**:
-    - Score is capped at **49** (High implementation risk) if any unresolved critical risk involves compliance or lacks an owner.
-    - Score is capped at **69** (Significant preparation required) if any other unresolved critical risk exists.
-  - Supports residual accepted risk calculations (exactly `0.5` penalty multiplier for low-severity accepted items) and stable dependency deduplication.
-- **Dynamic Provider Badging**: Connects to the backend server to determine the active analysis provider (fixtures vs live model structured output).
-- **W3C Accessibility**: Fully compliant keyboard navigation (horizontal tablist shifting, Space/Enter manual panel activation) and ARIA announcers for dynamic status updates.
-- **Responsive Print Layout**: Formats a professional executive advisory memo complete with print-optimized styles.
+- Evidence-backed risks use validated categories, condition codes, affected scope, and implementation stage.
+- Model suggestions remain diagnostic inputs only; deterministic application rules calculate severity and blocker state.
+- Active launch blockers cap readiness at **49**.
+- Active progression blockers cap readiness at **69**.
+- Resolved risks clear penalties and gates only after owner confirmation, a resolution note, and a valid resolution timestamp.
 
----
+### Live and demo providers
 
-## Project Structure
+- Deterministic fixture mode supports repeatable demonstrations and automated tests.
+- Gemini mode accepts custom implementation material and returns structured JSON that is independently validated before use.
+- Customer material remains separated from the fixed system instruction and is treated as untrusted content.
 
-```text
-├── LICENSE                 # Apache 2.0 License
-├── README.md               # Project documentation
-├── config.json             # Configuration file containing score weights and rules
-├── package.json            # Scripts, metadata, and dependencies
-├── server.js               # Node.js http server, exports createAppServer programmatically
-├── lib/
-│   ├── scoring.js          # Shared scoring and blocker-gate logic (UMD module)
-│   └── validation.js       # Shared strict schema validation logic (UMD module)
-├── public/
-│   ├── app.js              # Frontend UI orchestration, keyboard tabs, and event handlers
-│   ├── index.html          # Main HTML structure with semantic elements and W3C landmarks
-│   └── styles.css          # Core CSS variables, typography, focus states, and print layout
-└── tests/
-    ├── fixtures/           # Deterministic fixture scenarios (JSON format)
-    └── run-tests.js        # Self-contained integration test suite
+### Phase 3 reviewer workflow
+
+- Drag-and-drop intake for `.txt`, `.md`, and versioned RiskScan registry `.json` files.
+- Human severity, launch-blocker, and progression-blocker decisions while preserving the calculated result for auditability.
+- Tri-state blocker controls: calculated, force blocked, or force not blocked.
+- Stakeholder-based owner assignment, custom owners, target dates, reviewer rationale, status, and resolution notes.
+- Scan-to-scan comparison using stable permanent risk IDs with a deterministic fingerprint fallback.
+- New, maintained, and removed/resolved risk summaries.
+- Downloadable reviewer registry JSON and clipboard-ready executive Markdown briefs.
+- Print output synchronized with owners, target dates, effective severity, blocker state, and reviewer rationale.
+
+## Reviewer override policy
+
+Reviewer decisions do not overwrite the underlying model evidence or deterministic calculation. Each risk can retain:
+
+- `finalSeverity`: calculated application result
+- `severityOverride`: optional reviewer severity decision
+- `blocksLaunchOverride`: optional reviewer launch decision
+- `blocksProgressionOverride`: optional reviewer progression decision
+- `overrideReason` and `overrideUpdatedAt`: audit context
+
+A valid resolution always clears blocker gates. Stale override fields cannot keep a fully resolved risk blocked.
+
+## Registry import and export
+
+Saved registries use a versioned envelope:
+
+```json
+{
+  "exportFormat": "risk-scan-registry",
+  "exportVersion": 1,
+  "exportedAt": "2026-06-19T00:00:00.000Z",
+  "projectName": "Example rollout",
+  "analysisProfile": "general",
+  "sourceText": "...",
+  "result": {}
+}
 ```
 
----
+Imported JSON is rejected unless its format version is supported and its complete result passes the shared domain validator. Raw legacy analysis results can also be imported when they pass the same validation rules.
 
-## Getting Started
+## Project structure
 
-### Prerequisites
+```text
+├── config.json
+├── package.json
+├── server.js
+├── lib/
+│   ├── scoring.js
+│   └── validation.js
+├── public/
+│   ├── app.js                       # Phase 3 loader
+│   ├── app-core.js                  # Preserved Phase 2 application
+│   ├── reviewer-workflow.js         # Reviewer interactions and exports
+│   ├── reviewer-normalization-fix.js
+│   ├── reviewer-workflow.css
+│   ├── index.html
+│   └── styles.css
+└── tests/
+    ├── fixtures/
+    ├── run-tests.js                 # Core deterministic and API suite
+    └── run-reviewer-tests.js        # Reviewer override/import suite
+```
 
-- [Node.js](https://nodejs.org/) (runs on standard Node.js, no external runtime required)
+## Run locally
 
-### Installation
-
-Clone the repository and install dependencies (this project uses vanilla modules and has zero external npm dependencies for local execution):
+Requires Node.js and no external runtime dependencies.
 
 ```bash
 npm install
-```
-
-### Running the Application
-
-To start the local web server:
-
-```bash
 npm start
 ```
 
-By default, the server runs at `http://localhost:3050`. Open this URL in your web browser.
+The default local address is `http://localhost:3050`.
 
-#### Alternative Development Environment
-If you are developing inside an Antigravity sandbox without global Node.js on the path, you can run the optional development command:
+### Demo mode
+
 ```bash
-agy-node.cmd server.js
+ANALYSIS_PROVIDER=demo npm start
 ```
 
----
+Demo mode accepts the included deterministic scenarios. Editing a preset into arbitrary custom text requires a live provider; therefore, text-change comparison testing should use Gemini mode or two imported registry files.
 
-## Configuration & Environment Variables
+### Gemini mode
 
-You can configure the application behavior and active analysis modes via the following environment variables:
+Configure the provider on the server, not in browser code:
 
-| Variable | Default | Description |
-| :--- | :--- | :--- |
-| `PORT` | `3050` | Port for the web server |
-| `ANALYSIS_PROVIDER` | `demo` | The active provider: `demo`, `gemini`, or `antigravity` |
-| `GEMINI_API_KEY` | *(empty)* | API key to communicate with the Gemini API (for Phase 2) |
-| `GEMINI_MODEL` | `gemini-3.5-flash` | The Gemini model identifier to send requests to |
-| `ANALYSIS_TIMEOUT_MS` | `60000` | Analysis process timeout in milliseconds |
-| `MAX_FILE_BYTES` | `5242880` | Maximum file upload limit in bytes |
-| `MAX_SOURCE_TEXT_BYTES` | `750000` | Maximum allowed characters in the raw input textarea |
+```bash
+ANALYSIS_PROVIDER=gemini
+GEMINI_API_KEY=<server-side value>
+GEMINI_MODEL=<supported model identifier>
+node server.js
+```
 
----
+## Tests
 
-## Running the Tests
-
-To run the self-contained unit and API integration tests:
+Run the complete Phase 3 test command:
 
 ```bash
 npm test
 ```
 
-This runs the test suite (`tests/run-tests.js`), which:
-1. Validates the JSON schema validation rules.
-2. Checks scoring and penalty maths (including low-severity `0.5` residual penalties, dependency deduplication, and score gating).
-3. Spins up the application server programmatically on a dynamic free port to run live HTTP assertions.
-4. Safely closes the server programmatically.
+This runs the reviewer workflow tests first, followed by the existing deterministic validation, scoring, stable-ID, and HTTP integration suite.
 
----
+Individual suites are also available:
+
+```bash
+npm run test:reviewer
+npm run test:core
+```
+
+The reviewer suite verifies severity overrides, explicit true and false blocker overrides, resolution behavior, reviewer-field validation, and versioned registry imports.
+
+## Manual verification checklist
+
+1. Drop a `.txt` or `.md` file and confirm the source textarea is populated.
+2. Import an exported registry and confirm reviewer state, owners, target dates, and overrides are restored.
+3. Apply and clear each tri-state override and confirm the score and cap recalculate immediately.
+4. Run two live scans or import two registries and confirm new, maintained, and removed/resolved risks are summarized.
+5. Download the registry and re-import it.
+6. Copy the Markdown brief and verify its score, gate, owner, target-date, and action formatting.
+7. Print the advisory memo and verify reviewer decisions appear without replacing calculated evidence.
 
 ## License
 
-This project is licensed under the Apache License, Version 2.0. See the [LICENSE](LICENSE) file for details.
+Apache License 2.0. See [LICENSE](LICENSE).
