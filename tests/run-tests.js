@@ -3,6 +3,9 @@ const path = require('path');
 const http = require('http');
 const crypto = require('crypto');
 
+// Force deterministic demo provider for tests
+process.env.ANALYSIS_PROVIDER = 'demo';
+
 // Setup paths
 const PROJECT_DIR = path.resolve(__dirname, '..');
 const CONFIG_PATH = path.join(PROJECT_DIR, 'config.json');
