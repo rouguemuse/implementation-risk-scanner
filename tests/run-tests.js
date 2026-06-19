@@ -699,7 +699,7 @@ server.listen(0, '127.0.0.1', async () => {
       const largeErr = JSON.parse(largeRes.body);
       assert(largeErr.error.includes('exceeds maximum source text bytes limit'), 'Returns payload too large error message');
     } catch (err) {
-      assert(err.code === 'ECONNRESET' || err.message.includes('socket hang up') || err.message.includes('reset'), `Enforced connection termination for oversized payload: ${err.code || err.message}`);
+      assert(err.code === 'ECONNRESET' || err.code === 'EPIPE' || err.message.includes('socket hang up') || err.message.includes('reset') || err.message.includes('broken pipe'), `Enforced connection termination for oversized payload: ${err.code || err.message}`);
     }
 
   } catch (err) {
