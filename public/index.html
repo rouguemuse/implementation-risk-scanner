@@ -19,7 +19,10 @@
         <div>
           <h1>RISKSCAN</h1>
           <p class="subtitle">Implementation Readiness Scanner</p>
-          <span id="provider-badge" class="badge badge-purple" style="display: inline-block; margin-top: 0.25rem;">Analysis mode: Loading...</span>
+          <div class="analysis-mode-indicator">
+            <span class="pulse-dot"></span>
+            <span id="provider-badge">Analysis mode: Loading...</span>
+          </div>
         </div>
       </div>
       
@@ -101,7 +104,9 @@
         
         <!-- Empty State -->
         <div id="results-empty" class="empty-state">
-          <div class="empty-icon">⚡</div>
+          <div class="empty-icon">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+          </div>
           <h3>Ready for Scan</h3>
           <p>Select a demo preset scenario or paste your custom implementation notes, choose a profile, and click "Run Risk Analysis" to generate an evidence-backed advisory assessment.</p>
         </div>
