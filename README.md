@@ -1,8 +1,75 @@
-# RiskScan — Implementation Readiness Scanner
+# Implementation Risk Scanner — Customer Onboarding & Operational Readiness
 
-An implementation advisory web application that ingests discovery notes, meeting transcripts, or rollout requirements, analyzes them for operational risks, and calculates an evidence-backed readiness score.
+### Role: Product Strategist, Implementation Risk Analyst & Full-Stack Prototype Builder
+
+**AI-assisted implementation readiness scanner that identifies missing owners, unclear requirements, dependency risks, adoption gaps, and unresolved launch blockers before go-live.**
 
 > *Disclaimer: Fictional implementation case study. All organizations, people, locations, data, metrics, and outcomes shown in this project are simulated for portfolio demonstration purposes.*
+
+---
+
+## Overview
+
+Designed and built an implementation-risk and operational-readiness scanner for customer onboarding, rollout planning, and implementation review.
+
+The system analyzes discovery notes, implementation plans, and readiness documents to identify risks involving ownership, requirements, timelines, dependencies, adoption, handoffs, support, and launch readiness.
+
+Gemini extracts evidence and suggests classifications, but the application remains authoritative. Independent validation and deterministic rules calculate final severity, progression blockers, launch blockers, readiness scores, and score caps.
+
+Key capabilities include:
+
+* Missing-owner and accountability-gap detection
+* Unclear and untestable requirement identification
+* Timeline and dependency-risk analysis
+* Adoption and training-gap detection
+* Operational-readiness and post-launch support checks
+* Stable finding IDs across repeated scans
+* Evidence-grounded findings and required actions
+* Resolution tracking and blocker score gates
+* Prompt-injection mitigation
+* Retry, timeout, and sanitized provider-error handling
+* Twelve-scenario live model-quality evaluation harness
+
+Version 0.2.0 completed live Gemini analysis and passed all 12 evaluation scenarios, along with the full deterministic test suite.
+
+The goal was not simply to summarize implementation plans. It was to show how I assess whether a customer implementation is actually defined, owned, adoptable, supportable, and ready to succeed.
+
+---
+
+## Roadmap
+
+### Phase 1 — Deterministic Foundation · Completed
+
+* Independent validation and scoring
+* Resolution-state requirements
+* Readiness score caps for unresolved blockers
+* Demo-provider restrictions
+* Automated server and scoring tests
+* Accessible keyboard navigation
+* Production-quality interface redesign
+
+### Phase 2 — Live Gemini Analysis · Completed
+
+* Structured Gemini evidence extraction
+* Fixed onboarding-risk taxonomy
+* Condition-specific severity rules
+* Deterministic progression and launch blockers
+* Stable finding IDs and dependency remapping
+* Retry, timeout, and provider-error handling
+* Independent domain validation
+* Twelve golden evaluation scenarios
+* 12/12 live evaluation scenarios passed
+* Version 0.2.0 tagged and released
+
+### Phase 3 — Reviewer Workflow · Planned
+
+* Document upload and structured intake
+* Human confirmation and override controls
+* Scan-to-scan risk comparison
+* Exportable implementation-readiness brief
+* Resolution-owner assignment
+* Expanded evaluation fixtures
+* Portfolio-ready hosted demonstration
 
 ---
 
