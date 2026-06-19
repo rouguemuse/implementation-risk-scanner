@@ -8,9 +8,9 @@
   "risks": [
     {
       "id": "risk-001",
+      "tempId": "risk-001",
       "title": "Corporate standardization vs regional customization conflict",
-      "category": "stakeholder-conflict",
-      "severity": "high",
+      "category": "decision_gap",
       "confidence": 0.94,
       "evidence": [
         {
@@ -18,20 +18,30 @@
           "sourceReference": "Operational Survey Notes, Page 3"
         }
       ],
-      "businessImpact": "High chance of regional mutiny or poor system adoption. If corporate forces a rigid template, regional managers will use offline workarounds (e.g. spreadsheets), rendering corporate data analytics inaccurate.",
-      "reasoning": "A core conflict between top-down data normalization goals and bottom-up operational variance.",
-      "recommendedAction": "Implement a 'core template plus extensions' model. Allow local configurations for up to 20% of data fields, while keeping the core 80% standardized.",
-      "requiredDecision": "Customization threshold and governance policy",
-      "suggestedOwner": "Director of Global Operations",
+      "evidenceType": "explicit",
+      "implementationImpact": "High chance of regional mutiny or poor system adoption. If corporate forces a rigid template, regional managers will use offline workarounds (e.g. spreadsheets), rendering corporate data analytics inaccurate.",
+      "requiredClarificationOrAction": "Implement a 'core template plus extensions' model. Allow local configurations for up to 20% of data fields, while keeping the core 80% standardized.",
+      "affectedStakeholders": ["Corporate Leadership", "Regional Managers"],
+      "relatedDependencyIds": [],
+      "conditionCodes": ["required_approval_missing"],
+      "affectedScope": "core",
+      "affectedStage": "launch",
+      "suggestedSeverity": "high",
+      "accountabilityStatus": "ambiguous",
+      "suggestedBlocksProgression": true,
+      "suggestedBlocksLaunch": false,
+      "suggestedBlockerReason": "Standardization rules need regional alignment approval.",
+      "confidenceReason": "Misalignment explicitly stated in survey notes.",
+      "status": "open",
       "ownerStatus": "unconfirmed",
-      "validationQuestion": "What specific regional workflows are legally required to differ from the corporate template?",
-      "status": "open"
+      "resolutionNote": "",
+      "resolvedAt": ""
     },
     {
       "id": "risk-002",
+      "tempId": "risk-002",
       "title": "Incompatible local data schema requirements",
-      "category": "data-dependency",
-      "severity": "critical",
+      "category": "dependency_risk",
       "confidence": 0.91,
       "evidence": [
         {
@@ -39,20 +49,30 @@
           "sourceReference": "Data Dictionary Audit, Appendix A"
         }
       ],
-      "businessImpact": "System configuration blocks or reporting failures. Database syncs will fail if mandatory fields are null or formatted differently across locations.",
-      "reasoning": "Missing field mapping dependencies between regional legacy systems and the new standardized data warehouse schema.",
-      "recommendedAction": "Map the data schemas for all regions. Standardize common fields and create local flex fields for location-specific data compliance.",
-      "requiredDecision": "Data dictionary standardization approval",
-      "suggestedOwner": "Data Architect",
+      "evidenceType": "explicit",
+      "implementationImpact": "System configuration blocks or reporting failures. Database syncs will fail if mandatory fields are null or formatted differently across locations.",
+      "requiredClarificationOrAction": "Map the data schemas for all regions. Standardize common fields and create local flex fields for location-specific data compliance.",
+      "affectedStakeholders": ["Regional Managers"],
+      "relatedDependencyIds": [],
+      "conditionCodes": ["launch_dependency_failed"],
+      "affectedScope": "core",
+      "affectedStage": "launch",
+      "suggestedSeverity": "critical",
+      "accountabilityStatus": "missing",
+      "suggestedBlocksProgression": true,
+      "suggestedBlocksLaunch": true,
+      "suggestedBlockerReason": "Incompatible data schemas block configuration.",
+      "confidenceReason": "Data dictionary audit identifies schema mismatch.",
+      "status": "open",
       "ownerStatus": "unconfirmed",
-      "validationQuestion": "Can we map the differing local data fields into a flexible JSON metadata field in the database?",
-      "status": "open"
+      "resolutionNote": "",
+      "resolvedAt": ""
     },
     {
       "id": "risk-003",
+      "tempId": "risk-003",
       "title": "Undefined training ownership",
-      "category": "missing-ownership",
-      "severity": "high",
+      "category": "missing_owner",
       "confidence": 0.88,
       "evidence": [
         {
@@ -60,20 +80,30 @@
           "sourceReference": "Rollout Strategy Deck, slide 8"
         }
       ],
-      "businessImpact": "Failure of user adoption. Site managers will not know who is responsible for training materials, resulting in untrained employees and high error rates.",
-      "reasoning": "Critical enablement tasks are unassigned, leading to confusion and deferred accountability.",
-      "recommendedAction": "Assign a Lead Enablement Manager to own training. Appoint regional 'super users' at each location to manage peer training.",
-      "requiredDecision": "Assignment of Global Training Lead",
-      "suggestedOwner": "VP of Human Resources",
+      "evidenceType": "explicit",
+      "implementationImpact": "Failure of user adoption. Site managers will not know who is responsible for training materials, resulting in untrained employees and high error rates.",
+      "requiredClarificationOrAction": "Assign a Lead Enablement Manager to own training. Appoint regional 'super users' at each location to manage peer training.",
+      "affectedStakeholders": ["Regional Managers"],
+      "relatedDependencyIds": [],
+      "conditionCodes": ["workflow_owner_missing"],
+      "affectedScope": "supporting",
+      "affectedStage": "training",
+      "suggestedSeverity": "high",
+      "accountabilityStatus": "missing",
+      "suggestedBlocksProgression": true,
+      "suggestedBlocksLaunch": false,
+      "suggestedBlockerReason": "No owner assigned to coordinate training.",
+      "confidenceReason": "Direct statement that training ownership is undefined.",
+      "status": "open",
       "ownerStatus": "unconfirmed",
-      "validationQuestion": "Who will fund the training hours for the regional staff?",
-      "status": "open"
+      "resolutionNote": "",
+      "resolvedAt": ""
     },
     {
       "id": "risk-004",
+      "tempId": "risk-004",
       "title": "Lack of rollout sequencing plan",
-      "category": "scope-ambiguity",
-      "severity": "medium",
+      "category": "unclear_requirement",
       "confidence": 0.85,
       "evidence": [
         {
@@ -81,14 +111,24 @@
           "sourceReference": "Rollout Strategy Deck, slide 8"
         }
       ],
-      "businessImpact": "Operational chaos. Attempting a 'big bang' launch across all locations simultaneously will overwhelm the support desk.",
-      "reasoning": "Rollout phases are not sequenced, meaning resources cannot be concentrated where needed.",
-      "recommendedAction": "Design a phased rollout schedule. Start with a single pilot location in Month 1, followed by a regional wave in Month 2, and global launch in Month 3.",
-      "requiredDecision": "Phased rollout sequence approval",
-      "suggestedOwner": "Program Manager",
+      "evidenceType": "explicit",
+      "implementationImpact": "Operational chaos. Attempting a 'big bang' launch across all locations simultaneously will overwhelm the support desk.",
+      "requiredClarificationOrAction": "Design a phased rollout schedule. Start with a single pilot location in Month 1, followed by a regional wave in Month 2, and global launch in Month 3.",
+      "affectedStakeholders": ["Corporate Leadership", "Regional Managers"],
+      "relatedDependencyIds": [],
+      "conditionCodes": ["acceptance_criteria_missing"],
+      "affectedScope": "supporting",
+      "affectedStage": "discovery",
+      "suggestedSeverity": "medium",
+      "accountabilityStatus": "missing",
+      "suggestedBlocksProgression": false,
+      "suggestedBlocksLaunch": false,
+      "suggestedBlockerReason": "Rollout sequencing plan is undefined.",
+      "confidenceReason": "Rollout strategy deck marks sequencing as undefined.",
+      "status": "open",
       "ownerStatus": "unconfirmed",
-      "validationQuestion": "Which location is best suited (most stable operations) to serve as our initial pilot site?",
-      "status": "open"
+      "resolutionNote": "",
+      "resolvedAt": ""
     }
   ],
   "stakeholders": [

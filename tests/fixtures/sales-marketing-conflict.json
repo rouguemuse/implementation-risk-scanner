@@ -8,9 +8,9 @@
   "risks": [
     {
       "id": "risk-001",
+      "tempId": "risk-001",
       "title": "Conflicting lead-approval requirements",
-      "category": "stakeholder-conflict",
-      "severity": "critical",
+      "category": "decision_gap",
       "confidence": 0.95,
       "evidence": [
         {
@@ -18,20 +18,30 @@
           "sourceReference": "Discovery Notes, paragraph 1"
         }
       ],
-      "businessImpact": "The lead-routing system cannot be configured. Proceeding without resolution will cause Sales reps to ignore automatically qualified leads or create severe friction between departments.",
-      "reasoning": "Marketing and Sales have mutually exclusive workflow expectations for the same lead entity, resulting in an impasse.",
-      "recommendedAction": "Establish a unified lead definition workshop. Decide on an automated scoring threshold with a manual override protocol.",
-      "requiredDecision": "Automatic qualification vs. mandatory manual review policy",
-      "suggestedOwner": "Revenue Operations Lead",
+      "evidenceType": "explicit",
+      "implementationImpact": "The lead-routing system cannot be configured. Proceeding without resolution will cause Sales reps to ignore automatically qualified leads or create severe friction between departments.",
+      "requiredClarificationOrAction": "Establish a unified lead definition workshop. Decide on an automated scoring threshold with a manual override protocol.",
+      "affectedStakeholders": ["Marketing Team", "Sales Team"],
+      "relatedDependencyIds": [],
+      "conditionCodes": ["required_approval_missing"],
+      "affectedScope": "core",
+      "affectedStage": "launch",
+      "suggestedSeverity": "critical",
+      "accountabilityStatus": "ambiguous",
+      "suggestedBlocksProgression": true,
+      "suggestedBlocksLaunch": true,
+      "suggestedBlockerReason": "Lead qualification conflict blocks launch.",
+      "confidenceReason": "The conflict between Sales and Marketing is explicitly stated in discovery notes.",
+      "status": "open",
       "ownerStatus": "unconfirmed",
-      "validationQuestion": "Who has the final authority to approve the lead-routing and CRM entry policy?",
-      "status": "open"
+      "resolutionNote": "",
+      "resolvedAt": ""
     },
     {
       "id": "risk-002",
+      "tempId": "risk-002",
       "title": "Missing ownership for workflow mediation",
-      "category": "missing-ownership",
-      "severity": "high",
+      "category": "missing_owner",
       "confidence": 0.92,
       "evidence": [
         {
@@ -39,20 +49,30 @@
           "sourceReference": "Discovery Notes, paragraph 1"
         }
       ],
-      "businessImpact": "Project timeline drift. Decisions will be delayed indefinitely because there is no designated owner to finalize functional requirements.",
-      "reasoning": "A severe operational disagreement exists without a clear escalation path or authority figure to make the final call.",
-      "recommendedAction": "Formally assign a project sponsor or executive owner from Operations to sign off on cross-departmental rules.",
-      "requiredDecision": "Assignment of functional project owner",
-      "suggestedOwner": "VP of Revenue Operations",
+      "evidenceType": "explicit",
+      "implementationImpact": "Project timeline drift. Decisions will be delayed indefinitely because there is no designated owner to finalize functional requirements.",
+      "requiredClarificationOrAction": "Formally assign a project sponsor or executive owner from Operations to sign off on cross-departmental rules.",
+      "affectedStakeholders": ["Marketing Team", "Sales Team"],
+      "relatedDependencyIds": [],
+      "conditionCodes": ["workflow_owner_missing"],
+      "affectedScope": "core",
+      "affectedStage": "launch",
+      "suggestedSeverity": "high",
+      "accountabilityStatus": "missing",
+      "suggestedBlocksProgression": true,
+      "suggestedBlocksLaunch": false,
+      "suggestedBlockerReason": "No owner is assigned to mediate.",
+      "confidenceReason": "Missing ownership is directly stated.",
+      "status": "open",
       "ownerStatus": "unconfirmed",
-      "validationQuestion": "Which executive owns the final sign-off for cross-departmental system integrations?",
-      "status": "open"
+      "resolutionNote": "",
+      "resolvedAt": ""
     },
     {
       "id": "risk-003",
+      "tempId": "risk-003",
       "title": "Undefined lead-routing success metrics",
-      "category": "undefined-metrics",
-      "severity": "medium",
+      "category": "success_measurement_gap",
       "confidence": 0.88,
       "evidence": [
         {
@@ -60,14 +80,24 @@
           "sourceReference": "Discovery Notes, paragraph 1"
         }
       ],
-      "businessImpact": "Inability to measure rollout success or ROI. The team will argue about qualification rates versus lead conversion rates without objective baselines.",
-      "reasoning": "No objective success metrics (e.g. lead-to-opportunity conversion rate, lead response SLA time) are defined to measure performance.",
-      "recommendedAction": "Define baseline metrics: Target conversion rate (>15%) and lead processing SLA (<2 hours).",
-      "requiredDecision": "Definition of Lead Quality and Speed KPIs",
-      "suggestedOwner": "Analytics Lead",
+      "evidenceType": "explicit",
+      "implementationImpact": "Inability to measure rollout success or ROI. The team will argue about qualification rates versus lead conversion rates without objective baselines.",
+      "requiredClarificationOrAction": "Define baseline metrics: Target conversion rate (>15%) and lead processing SLA (<2 hours).",
+      "affectedStakeholders": ["Marketing Team", "Sales Team"],
+      "relatedDependencyIds": [],
+      "conditionCodes": ["success_criteria_missing"],
+      "affectedScope": "supporting",
+      "affectedStage": "validation",
+      "suggestedSeverity": "medium",
+      "accountabilityStatus": "missing",
+      "suggestedBlocksProgression": false,
+      "suggestedBlocksLaunch": false,
+      "suggestedBlockerReason": "Success metrics are vague.",
+      "confidenceReason": "No objective KPIs are defined.",
+      "status": "open",
       "ownerStatus": "unconfirmed",
-      "validationQuestion": "What are the target quantitative success metrics for the new lead routing process?",
-      "status": "open"
+      "resolutionNote": "",
+      "resolvedAt": ""
     }
   ],
   "stakeholders": [

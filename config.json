@@ -1,16 +1,15 @@
 {
   "baseScore": 100,
   "categories": [
-    "stakeholder-conflict",
-    "missing-ownership",
-    "undefined-metrics",
-    "unclear-handoffs",
-    "data-dependency",
-    "configuration-dependency",
-    "unvalidated-assumptions",
-    "scope-ambiguity",
-    "adoption-risk",
-    "compliance-risk"
+    "missing_owner",
+    "unclear_requirement",
+    "timeline_risk",
+    "dependency_risk",
+    "adoption_risk",
+    "operational_readiness_gap",
+    "handoff_risk",
+    "success_measurement_gap",
+    "decision_gap"
   ],
   "severities": [
     "critical",

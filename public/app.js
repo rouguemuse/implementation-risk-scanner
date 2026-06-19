@@ -71,9 +71,9 @@ const App = {
       this.config = {
         baseScore: 100,
         categories: [
-          "stakeholder-conflict", "missing-ownership", "undefined-metrics", "unclear-handoffs",
-          "data-dependency", "configuration-dependency", "unvalidated-assumptions", "scope-ambiguity",
-          "adoption-risk", "compliance-risk"
+          "missing_owner", "unclear_requirement", "timeline_risk", "dependency_risk",
+          "adoption_risk", "operational_readiness_gap", "handoff_risk", "success_measurement_gap",
+          "decision_gap"
         ],
         severities: ["critical", "high", "medium", "low"],
         penalties: {
@@ -501,13 +501,15 @@ const App = {
     const filterStatus = document.getElementById('filter-status').value;
 
     this.currentResult.risks.forEach((risk, index) => {
+      const finalSev = risk.finalSeverity || 'low';
+      
       // Filters check
-      if (filterSev !== 'all' && risk.severity !== filterSev) return;
+      if (filterSev !== 'all' && finalSev !== filterSev) return;
       if (filterCat !== 'all' && risk.category !== filterCat) return;
       if (filterStatus !== 'all' && risk.status !== filterStatus) return;
 
       const card = document.createElement('div');
-      card.className = `risk-card severity-${risk.severity}`;
+      card.className = `risk-card severity-${finalSev}`;
       
       const evidenceHTML = risk.evidence.map(ev => `
         <div class="evidence-quote">
@@ -515,33 +517,47 @@ const App = {
         </div>
       `).join('');
 
+      const conditionCodesHTML = (risk.conditionCodes || []).map(code => `
+        <span class="badge" style="background-color: var(--bg-surface-elevated); border: 1px solid var(--border-light); font-size: 0.7rem;">${escapeHTML(code)}</span>
+      `).join(' ');
+
       const hasValidationWarning = risk.status === 'resolved' && !window.ScoringEngine.isValidResolution(risk);
+
+      const impactText = risk.implementationImpact || risk.businessImpact || '';
+      const actionText = risk.requiredClarificationOrAction || risk.recommendedAction || '';
 
       card.innerHTML = `
         <div class="risk-card-header">
           <div class="risk-title-wrapper">
             <span class="badge ${
-              risk.severity === 'critical' || risk.severity === 'high' ? 'badge-red' : 'badge-amber'
-            }">${escapeHTML(risk.severity)}</span>
+              finalSev === 'critical' || finalSev === 'high' ? 'badge-red' : 'badge-amber'
+            }">${escapeHTML(finalSev)}</span>
             <h3>${escapeHTML(risk.title)}</h3>
           </div>
           <div class="risk-meta-badges">
             <span class="badge badge-purple">${escapeHTML(risk.category)}</span>
+            <span class="badge badge-blue">Accountability: ${escapeHTML(risk.accountabilityStatus || 'unconfirmed')}</span>
             <span class="risk-confidence-badge">Confidence: ${(risk.confidence * 100).toFixed(0)}%</span>
           </div>
         </div>
         <div class="risk-card-body">
           <div class="risk-section-block">
-            <strong>Business Impact</strong>
-            <p>${escapeHTML(risk.businessImpact)}</p>
+            <strong>Implementation Impact</strong>
+            <p>${escapeHTML(impactText)}</p>
           </div>
           <div class="risk-section-block">
             <strong>Evidence</strong>
             ${evidenceHTML}
           </div>
           <div class="risk-section-block">
+            <strong>Condition Codes</strong>
+            <div style="display: flex; flex-wrap: wrap; gap: 0.25rem; margin-top: 0.25rem;">
+              ${conditionCodesHTML || '<span style="color:var(--text-muted); font-size: 0.75rem;">None</span>'}
+            </div>
+          </div>
+          <div class="risk-section-block" style="margin-top: 0.75rem;">
             <strong>Mitigation Strategy</strong>
-            <p>${escapeHTML(risk.recommendedAction)}</p>
+            <p>${escapeHTML(actionText)}</p>
           </div>
           
           ${hasValidationWarning ? `
@@ -664,19 +680,24 @@ const App = {
       
       const evidenceHTML = risk.evidence.map(e => `
         <div class="print-evidence-quote">
-          "${escapeHTML(e.excerpt)}" (${escapeHTML(e.sourceReference})
+          "${escapeHTML(e.excerpt)}" (${escapeHTML(e.sourceReference)})
         </div>
       `).join('');
 
+      const finalSev = risk.finalSeverity || 'low';
+      const impactText = risk.implementationImpact || risk.businessImpact || '';
+      const actionText = risk.requiredClarificationOrAction || risk.recommendedAction || '';
+      const reasonText = risk.confidenceReason || risk.reasoning || '';
+
       div.innerHTML = `
         <div class="print-risk-title">
-          <span>[${escapeHTML(risk.severity.toUpperCase())}] ${escapeHTML(risk.title)}</span>
+          <span>[${escapeHTML(finalSev.toUpperCase())}] ${escapeHTML(risk.title)}</span>
           <span style="font-size:9pt; font-weight:normal; color:#666;">Status: ${escapeHTML(risk.status.toUpperCase())} | Category: ${escapeHTML(risk.category)}</span>
         </div>
         <div style="margin-top: 5px; font-size: 9.5pt;">
-          <strong>Business Impact:</strong> ${escapeHTML(risk.businessImpact)}<br>
-          <strong>Reasoning:</strong> ${escapeHTML(risk.reasoning)}<br>
-          <strong>Mitigation:</strong> ${escapeHTML(risk.recommendedAction)}<br>
+          <strong>Implementation Impact:</strong> ${escapeHTML(impactText)}<br>
+          <strong>Reasoning:</strong> ${escapeHTML(reasonText)}<br>
+          <strong>Mitigation:</strong> ${escapeHTML(actionText)}<br>
           <strong>Owner:</strong> ${escapeHTML(risk.suggestedOwner)} (${escapeHTML(risk.ownerStatus)})
           ${risk.resolutionNote ? `<br><strong>Resolution Note:</strong> ${escapeHTML(risk.resolutionNote)}` : ''}
           ${risk.resolvedAt ? `<br><strong>Resolved At:</strong> ${escapeHTML(risk.resolvedAt)}` : ''}

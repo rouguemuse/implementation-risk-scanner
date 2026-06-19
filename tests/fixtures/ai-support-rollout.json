@@ -8,9 +8,9 @@
   "risks": [
     {
       "id": "risk-001",
+      "tempId": "risk-001",
       "title": "Autonomous AI vs Legal compliance conflict",
-      "category": "stakeholder-conflict",
-      "severity": "critical",
+      "category": "decision_gap",
       "confidence": 0.96,
       "evidence": [
         {
@@ -18,20 +18,30 @@
           "sourceReference": "Rollout Plan, Section 2"
         }
       ],
-      "businessImpact": "The project cannot go live in fully autonomous mode. Attempting to bypass legal will result in regulatory non-compliance, while enforcing human review will bottleneck the support queue unless staffed.",
-      "reasoning": "Mutually exclusive operational directives between top management (automation) and legal compliance (mandatory gatekeeping).",
-      "recommendedAction": "Implement a tiered rollout: start with 'co-pilot' mode (human-in-the-loop review) for the first 30 days, then move to autonomous responses for low-risk, verified intents.",
-      "requiredDecision": "Adoption of human-in-the-loop review protocol vs. full autonomous launch",
-      "suggestedOwner": "VP of Customer Support",
+      "evidenceType": "explicit",
+      "implementationImpact": "The project cannot go live in fully autonomous mode. Attempting to bypass legal will result in regulatory non-compliance, while enforcing human review will bottleneck the support queue unless staffed.",
+      "requiredClarificationOrAction": "Implement a tiered rollout: start with 'co-pilot' mode (human-in-the-loop review) for the first 30 days, then move to autonomous responses for low-risk, verified intents.",
+      "affectedStakeholders": ["Corporate Leadership", "Legal & Compliance Team"],
+      "relatedDependencyIds": [],
+      "conditionCodes": ["required_approval_missing"],
+      "affectedScope": "core",
+      "affectedStage": "launch",
+      "suggestedSeverity": "critical",
+      "accountabilityStatus": "ambiguous",
+      "suggestedBlocksProgression": true,
+      "suggestedBlocksLaunch": true,
+      "suggestedBlockerReason": "AI rollout lacks legal compliance approval.",
+      "confidenceReason": "Contradiction explicitly stated between leadership and legal.",
+      "status": "open",
       "ownerStatus": "unconfirmed",
-      "validationQuestion": "What specific customer response categories can legal approve for autonomous AI generation?",
-      "status": "open"
+      "resolutionNote": "",
+      "resolvedAt": ""
     },
     {
       "id": "risk-002",
+      "tempId": "risk-002",
       "title": "Unallocated human review staffing",
-      "category": "unclear-handoffs",
-      "severity": "high",
+      "category": "missing_owner",
       "confidence": 0.93,
       "evidence": [
         {
@@ -39,20 +49,30 @@
           "sourceReference": "Schedule Spreadsheet, Resource Tab"
         }
       ],
-      "businessImpact": "Support agents will be overwhelmed by reviewing AI drafts on top of their normal duties, leading to severe SLA breaches and long ticket resolution queues.",
-      "reasoning": "A mandatory process step (human review) has been added to the workflow without allocating the corresponding labor hours or headcount in the schedule.",
-      "recommendedAction": "Calculate required reviewer headcount based on ticket volume. Reallocate 3 senior agents to the review queue or adjust the launch timeline to allow hiring.",
-      "requiredDecision": "Allocation of budget/headcount for review agents",
-      "suggestedOwner": "Support Operations Lead",
+      "evidenceType": "explicit",
+      "implementationImpact": "Support agents will be overwhelmed by reviewing AI drafts on top of their normal duties, leading to severe SLA breaches and long ticket resolution queues.",
+      "requiredClarificationOrAction": "Calculate required reviewer headcount based on ticket volume. Reallocate 3 senior agents to the review queue or adjust the launch timeline to allow hiring.",
+      "affectedStakeholders": ["Support Team"],
+      "relatedDependencyIds": [],
+      "conditionCodes": ["workflow_owner_missing"],
+      "affectedScope": "supporting",
+      "affectedStage": "launch",
+      "suggestedSeverity": "high",
+      "accountabilityStatus": "missing",
+      "suggestedBlocksProgression": true,
+      "suggestedBlocksLaunch": false,
+      "suggestedBlockerReason": "No resources allocated for review queue.",
+      "confidenceReason": "Resources missing in schedule spreadsheets.",
+      "status": "open",
       "ownerStatus": "unconfirmed",
-      "validationQuestion": "How many ticket reviews can a support agent perform per hour without degrading quality?",
-      "status": "open"
+      "resolutionNote": "",
+      "resolvedAt": ""
     },
     {
       "id": "risk-003",
+      "tempId": "risk-003",
       "title": "Undefined quantitative success metrics",
-      "category": "undefined-metrics",
-      "severity": "medium",
+      "category": "success_measurement_gap",
       "confidence": 0.89,
       "evidence": [
         {
@@ -60,14 +80,24 @@
           "sourceReference": "Project Charter, page 2"
         }
       ],
-      "businessImpact": "Inability to demonstrate project ROI or model efficacy. Without hard KPIs, success will be subjective and vulnerable to random negative feedback.",
-      "reasoning": "Vague qualitative goals are substituted for measurable metrics like CSAT, first contact resolution (FCR), or cost per ticket.",
-      "recommendedAction": "Define specific success metrics: target CSAT of 4.2+, AI resolution rate of 30%, and average response time under 15 minutes.",
-      "requiredDecision": "Approval of quantitative support KPIs",
-      "suggestedOwner": "VP of Customer Support",
+      "evidenceType": "explicit",
+      "implementationImpact": "Inability to demonstrate project ROI or model efficacy. Without hard KPIs, success will be subjective and vulnerable to random negative feedback.",
+      "requiredClarificationOrAction": "Define specific success metrics: target CSAT of 4.2+, AI resolution rate of 30%, and average response time under 15 minutes.",
+      "affectedStakeholders": ["Corporate Leadership", "Support Team"],
+      "relatedDependencyIds": [],
+      "conditionCodes": ["success_criteria_missing"],
+      "affectedScope": "supporting",
+      "affectedStage": "validation",
+      "suggestedSeverity": "medium",
+      "accountabilityStatus": "missing",
+      "suggestedBlocksProgression": false,
+      "suggestedBlocksLaunch": false,
+      "suggestedBlockerReason": "Vague success metrics.",
+      "confidenceReason": "Only qualitative goals defined.",
+      "status": "open",
       "ownerStatus": "unconfirmed",
-      "validationQuestion": "What specific numbers constitute 'improved customer experience' for the executive board?",
-      "status": "open"
+      "resolutionNote": "",
+      "resolvedAt": ""
     }
   ],
   "stakeholders": [
