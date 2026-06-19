@@ -1,11 +1,13 @@
 {
   "name": "implementation-risk-scanner",
-  "version": "0.1.0",
-  "description": "Implementation advisory application that reviews customer discovery notes and identifies risks.",
+  "version": "0.3.0",
+  "description": "Implementation readiness scanner with deterministic scoring, live analysis, and an auditable reviewer workflow.",
   "main": "server.js",
   "scripts": {
     "start": "node server.js",
-    "test": "node tests/run-tests.js"
+    "test": "node tests/run-reviewer-tests.js && node tests/run-tests.js",
+    "test:reviewer": "node tests/run-reviewer-tests.js",
+    "test:core": "node tests/run-tests.js"
   },
   "author": "Jayme Volstad",
   "license": "Apache-2.0",
