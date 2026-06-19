@@ -3,11 +3,30 @@ const fs = require('fs');
 const path = require('path');
 const crypto = require('crypto');
 
+// Load .env file programmatically if it exists
+const envPath = path.resolve(__dirname, '.env');
+if (fs.existsSync(envPath)) {
+  const envContent = fs.readFileSync(envPath, 'utf8');
+  envContent.split(/\r?\n/).forEach(line => {
+    const trimmed = line.trim();
+    if (trimmed && !trimmed.startsWith('#')) {
+      const parts = trimmed.split('=');
+      if (parts.length >= 2) {
+        const key = parts[0].trim();
+        const val = parts.slice(1).join('=').trim().replace(/^['"]|['"]$/g, '');
+        if (process.env[key] === undefined) {
+          process.env[key] = val;
+        }
+      }
+    }
+  });
+}
+
 // Load environment configuration with defaults
 const PORT = parseInt(process.env.PORT || '3050', 10);
 const ANALYSIS_PROVIDER = process.env.ANALYSIS_PROVIDER || 'demo';
 const GEMINI_API_KEY = process.env.GEMINI_API_KEY || '';
-const GEMINI_MODEL = process.env.GEMINI_MODEL || 'gemini-3.5-flash';
+const GEMINI_MODEL = process.env.GEMINI_MODEL || 'gemini-3.1-flash-lite';
 const ANTIGRAVITY_AGENT_PATH = process.env.ANTIGRAVITY_AGENT_PATH || '';
 const ANTIGRAVITY_BRAIN_PATH = process.env.ANTIGRAVITY_BRAIN_PATH || '';
 const MAX_SOURCE_TEXT_BYTES = parseInt(process.env.MAX_SOURCE_TEXT_BYTES || '750000', 10);
@@ -314,8 +333,26 @@ Rules:
 * Do not inflate the number or severity of findings.
 * Consolidate duplicate findings.
 * Prefer a smaller number of specific, defensible findings over a large number of generic observations.
+* If a plan is well-formed with specific individual owners, quantitative acceptance criteria, confirmed compliance, and tested rollback procedures, do not generate findings for minor omissions; return an empty or near-empty risks array.
+* For compliance, data privacy ownership, or audits that are unresolved when launch is imminent or rollout is scheduled, classify them under category 'decision_gap' with code 'required_approval_missing' or category 'missing_owner' with code 'workflow_owner_missing', and always set affectedStage to 'launch' since they directly block the imminent release.
 * Return only JSON conforming to the supplied response schema.
-* Do not calculate or modify the final readiness score. Return the evidence and classifications required by the deterministic scoring layer.`;
+* Do not calculate or modify the final readiness score. Return the evidence and classifications required by the deterministic scoring layer.
+
+Category and Condition Code Compatibility:
+You must strictly match conditionCodes to the finding's category according to this map:
+- category: 'missing_owner'        => allowed conditionCodes: ['workflow_owner_missing', 'post_launch_owner_missing']
+- category: 'handoff_risk'          => allowed conditionCodes: ['workflow_owner_missing', 'post_launch_owner_missing']
+- category: 'unclear_requirement'   => allowed conditionCodes: ['core_requirements_conflict', 'acceptance_criteria_missing']
+- category: 'timeline_risk'         => allowed conditionCodes: ['implementation_sequence_invalid', 'customer_milestone_unconfirmed']
+- category: 'dependency_risk'       => allowed conditionCodes: ['launch_dependency_unconfirmed', 'launch_dependency_failed', 'essential_data_unavailable', 'integration_feasibility_unknown']
+- category: 'adoption_risk'         => allowed conditionCodes: ['training_plan_missing', 'change_communication_missing', 'adoption_measurement_missing']
+- category: 'operational_readiness_gap' => allowed conditionCodes: ['support_model_missing', 'escalation_path_missing', 'monitoring_plan_missing', 'rollback_plan_missing']
+- category: 'success_measurement_gap' => allowed conditionCodes: ['success_criteria_missing', 'adoption_measurement_missing']
+- category: 'decision_gap'          => allowed conditionCodes: ['required_approval_missing']
+
+Additional Constraints:
+* The condition codes 'launch_dependency_failed' and 'launch_dependency_unconfirmed' are contradictory and cannot be used together in the same finding.
+* If a finding's accountabilityStatus is 'confirmed', you cannot use 'workflow_owner_missing' or 'post_launch_owner_missing' in its conditionCodes.`;
 
           let rawResponseText;
           try {
@@ -480,7 +517,11 @@ Rules:
 };
 
 function createAppServer() {
-  return http.createServer(handleRequest);
+  const server = http.createServer(handleRequest);
+  server.requestTimeout = 120000;
+  server.headersTimeout = 120000;
+  server.keepAliveTimeout = 120000;
+  return server;
 }
 
 if (require.main === module) {

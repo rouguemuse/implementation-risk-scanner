@@ -27,19 +27,25 @@ An implementation advisory web application that ingests discovery notes, meeting
 ```text
 ├── LICENSE                 # Apache 2.0 License
 ├── README.md               # Project documentation
+├── .env.example            # Environment variables template
 ├── config.json             # Configuration file containing score weights and rules
 ├── package.json            # Scripts, metadata, and dependencies
-├── server.js               # Node.js http server, exports createAppServer programmatically
+├── server.js               # Node.js HTTP server, programmatically parses .env and runs API
 ├── lib/
+│   ├── analysis-schema.js  # Canonical structured JSON schema for Gemini output
 │   ├── scoring.js          # Shared scoring and blocker-gate logic (UMD module)
-│   └── validation.js       # Shared strict schema validation logic (UMD module)
+│   ├── validation.js       # Shared strict schema validation logic (UMD module)
+│   └── providers/
+│       └── gemini.js       # Gemini request/response and retry orchestration
 ├── public/
 │   ├── app.js              # Frontend UI orchestration, keyboard tabs, and event handlers
 │   ├── index.html          # Main HTML structure with semantic elements and W3C landmarks
 │   └── styles.css          # Core CSS variables, typography, focus states, and print layout
 └── tests/
     ├── fixtures/           # Deterministic fixture scenarios (JSON format)
-    └── run-tests.js        # Self-contained integration test suite
+    ├── reports/            # Output directory for evaluation reports
+    ├── run-tests.js        # Self-contained integration test suite
+    └── run-evaluation.js   # Live Gemini LLM model quality evaluation harness
 ```
 
 ---
@@ -105,6 +111,24 @@ This runs the test suite (`tests/run-tests.js`), which:
 2. Checks scoring and penalty maths (including low-severity `0.5` residual penalties, dependency deduplication, and score gating).
 3. Spins up the application server programmatically on a dynamic free port to run live HTTP assertions.
 4. Safely closes the server programmatically.
+
+---
+
+## Running the Model Quality Evaluation Harness
+
+To run the quality evaluation harness against the live Gemini model:
+
+1. Create a `.env` file in the root directory and add your API key:
+   ```text
+   GEMINI_API_KEY="your_api_key_here"
+   ANALYSIS_PROVIDER="gemini"
+   ```
+2. Run the evaluation harness script:
+   ```bash
+   node tests/run-evaluation.js
+   ```
+
+This will spin up a local server, configure it for `gemini` mode, send 12 golden test scenarios, evaluate their quality assertions, and generate structured Markdown and JSON reports in `tests/reports/`.
 
 ---
 
